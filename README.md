@@ -1,6 +1,6 @@
 # ledman
 
-A led command and control thing. Build with pi-blaster and bottle.
+A LED command and control thing. Build with pi-blaster and bottle.
 
 # Install
 
