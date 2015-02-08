@@ -13,6 +13,15 @@ A LED command and control thing. Build with [pi-blaster](https://github.com/sarf
     sudo ln -s /home/pi/ledman/nginx.conf /etc/nginx/sites-enabled/ledman
     chmod +x ledman.py
     ./ledman -s start
+    
+# Config
+On first run a config file will be created. Edit it as you like.
+
+Multiple apikeys may be added comma (,) separeted.
+
+Also since the the server make use of tmiebased tokens for auth, make sure to have your timezone setup. On a debian system this can be done like so.
+
+    sudo dpkg-reconfigure tzdata
 
 # License
 
