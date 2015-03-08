@@ -35,6 +35,7 @@ def store_state(pin, brightness):
 def set_gpio(pin, brightness):
     if DEBUG:
         logger.info('not actually doing echo '+pin+'='+brightness+' > /dev/pi-blaster')
+        store_state(pin, brightness)
     else:
         os.system('echo "'+pin+'='+brightness+'" > /dev/pi-blaster')
         store_state(pin, brightness)
