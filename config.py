@@ -5,7 +5,8 @@ import os
 __author__ = 'Victor Häggqvist'
 
 class Config:
-    config_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ledman.conf')
+    confdir = os.path.dirname(os.path.realpath(__file__))
+    config_file = os.path.join(confdir, 'ledman.conf')
     default = """
 [gpio]
 red=22
