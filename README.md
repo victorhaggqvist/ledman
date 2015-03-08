@@ -12,7 +12,7 @@ A LED command and control thing. Build with [pi-blaster](https://github.com/sarf
     sudo rm /etc/nginx/sites-enabled/default
     sudo ln -s /home/pi/ledman/nginx.conf /etc/nginx/sites-enabled/ledman
     chmod +x ledman.py
-    ./ledman -s start
+    ./ledman.py -s start
     
 # Config
 On first run a config file will be created. Edit it as you like.
