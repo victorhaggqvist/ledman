@@ -120,8 +120,7 @@ def start_server(fork):
         with context:
             run(host='127.0.0.1', port=8080)
     else:
-        run(host='127.0.0.1', port=8080)
-        # run(host='127.0.0.1', port=8080, debug=True)
+        run(host='127.0.0.1', port=8080, debug=True)
 
 
 def stop_server():
