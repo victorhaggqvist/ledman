@@ -30,15 +30,15 @@ keys=testkeychangeme
 
         config.read(self.config_file)
 
-        self.GPIO_RED = config.get('gpio', 'red') #22
-        self.GPIO_GREEN = config.get('gpio', 'green') #27
-        self.GPIO_BLUE = config.get('gpio', 'blue') #17
+        self.GPIO_RED = config.get('gpio', 'red')  # 22
+        self.GPIO_GREEN = config.get('gpio', 'green')  # 27
+        self.GPIO_BLUE = config.get('gpio', 'blue')  # 17
 
-        self.RED_DEFAULT = config.get('default_level','red') #0
-        self.GREEN_DEFAULT = config.get('default_level','green') #0.3
-        self.BLUE_DEFAULT = config.get('default_level','blue') #0.5
+        self.RED_DEFAULT = config.get('default_level', 'red')  # 0
+        self.GREEN_DEFAULT = config.get('default_level', 'green')  # 0.3
+        self.BLUE_DEFAULT = config.get('default_level', 'blue')  # 0.5
 
-        keys = config.get('server','keys')
+        keys = config.get('server', 'keys')
 
         self.keys = []
         for k in keys.split(','):
