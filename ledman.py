@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 import argparse
+import logging
 from config import Config
 config = Config()
 import control
@@ -10,6 +11,13 @@ __author__ = 'Victor Häggqvist'
 
 # DEBUG = True
 DEBUG = False
+
+logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
+logger = logging.getLogger('ledman')
+fh = logging.FileHandler('ledman.log')
+fh.setLevel(logging.INFO)
+fh.setFormatter(logging.Formatter(fmt='%(asctime)s:%(levelname)s:%(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
+logger.addHandler(fh)
 
 
 def main():
@@ -23,25 +31,25 @@ def main():
     args = parser.parse_args()
 
     if args.on:
-        print("[ledman] turning lights on")
+        logger.info('turning lights on')
         control.turn_on()
     elif args.off:
-        print("[ledman] turning lights off")
+        logger.info('turning lights off')
         control.turn_off()
     elif args.server == 'start' and args.nofork:
-        print("[ledman] start server (no fork)")
+        logger.info('start server (no fork)')
         server.start_server(False)
     elif args.server == 'start':
-        print("[ledman] start server")
+        logger.info('start server')
         server.start_server(True)
     elif args.server == 'status':
-        print("[ledman] server status")
+        logger.info('server status')
         server.status_server()
     elif args.server == 'stop':
-        print("[ledman] stop server")
+        logger.info('stop server')
         server.stop_server()
     elif args.color and args.level:
-        print("[ledman] set colorlevel")
+        logger.info('set color level')
         control.set_color(args.color, args.level)
         # print(args.color+'-c '+args.level+'-l')
     # elif args.set:

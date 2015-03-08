@@ -1,5 +1,6 @@
 # coding=utf-8
 from contextlib import contextmanager
+import logging
 import os
 from bottle import request, abort, run, post, get, response, put
 import daemon
@@ -11,20 +12,20 @@ import control
 __author__ = 'Victor Häggqvist'
 
 auth = TimeAuth()
-logfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ledman.log')
+
+logger = logging.getLogger(__name__)
+fh = logging.FileHandler('server.log')
+fh.setLevel(logging.INFO)
+fh.setFormatter(logging.Formatter(fmt='%(asctime)s:%(levelname)s:%(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
+logger.addHandler(fh)
 serverlog = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ledman_daemon.log')
 pidfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ledman.pid')
 
 
-def log(msg):
-    print('[server] '+msg)
-    f = open(logfile, 'a+')
-    f.write('[server] '+msg+"\n")
-    f.close()
-
 @get('/')
 def home():
     return 'ledman is happy'
+
 
 @post('/on')
 def turn_on():
@@ -33,7 +34,8 @@ def turn_on():
     if not auth.auth(token, timestamp):
         abort(403)
 
-    log("turn on")
+    ip = request.environ.get('REMOTE_ADDR')
+    logger.info('client %s: turn on', ip)
     control.turn_on()
     return ""
 
@@ -45,7 +47,8 @@ def turn_off():
     if not auth.auth(token, timestamp):
         abort(403)
 
-    log("turn off")
+    ip = request.environ.get('REMOTE_ADDR')
+    logger.info('client %s: turn off', ip)
     control.turn_off()
     return ""
 
@@ -58,6 +61,8 @@ def set_color(color=None):
         abort(403)
 
     level = request.query.level
+    ip = request.environ.get('REMOTE_ADDR')
+    logger.info('client %s: set color %s at %s', ip, color, level)
     control.set_color(color, level)
     return ""
 
@@ -69,6 +74,8 @@ def status():
     if not auth.auth(token, timestamp):
         abort(403)
 
+    ip = request.environ.get('REMOTE_ADDR')
+    logger.info('client %s: status request', ip)
     state = control.get_status()
 
     response.content_type = 'application/json: charset=utf8'
@@ -108,8 +115,8 @@ def start_server(fork):
             stdout=f,
             stderr=f
             )
-        log('starting server')
-        log('forking to background')
+        logger.info('starting server')
+        logger.info('forking to background')
         with context:
             run(host='127.0.0.1', port=8080)
     else:
@@ -119,14 +126,14 @@ def start_server(fork):
 
 def stop_server():
     if os.path.isfile(pidfile):
-        log('stopping server..')
+        logger.info('stopping server..')
         with open(pidfile, "r") as p:
             pid = int(p.read())
             os.kill(pid, signal.SIGTERM)
             p.close()
-        log('server stopped')
+        logger.info('server stopped')
     else:
-        log('server is down')
+        logger.info('server is down')
 
 
 def status_server():
@@ -134,15 +141,15 @@ def status_server():
         f = open(pidfile, "r")
         pid = int(f.read())
         f.close()
-        log('checking if pid '+str(pid)+' is running..')
+        logger.info('checking if pid '+str(pid)+' is running..')
         if check_pid(pid):
-            log('server is running')
+            logger.info('server is running')
         else:
-            log('server is down')
+            logger.info('server is down')
             os.remove(pidfile)
-            log('removing old pidfile')
+            logger.info('removing old pidfile')
     else:
-        log('server is down')
+        logger.info('server is down')
 
 
 def check_pid(pid):

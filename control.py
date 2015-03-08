@@ -1,10 +1,16 @@
 # coding=utf-8
+import logging
 import os
 from ledman import DEBUG, config
 import json
 
 __author__ = 'Victor Häggqvist'
 
+logger = logging.getLogger(__name__)
+fh = logging.FileHandler('ledman.log')
+fh.setLevel(logging.INFO)
+fh.setFormatter(logging.Formatter(fmt='%(asctime)s:%(levelname)s:%(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
+logger.addHandler(fh)
 statefile = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ledstate.json')
 
 
@@ -28,11 +34,11 @@ def store_state(pin, brightness):
 
 def set_gpio(pin, brightness):
     if DEBUG:
-        print('[DEBUG] not actually doing echo '+pin+'='+brightness+' > /dev/pi-blaster')
+        logger.info('not actually doing echo '+pin+'='+brightness+' > /dev/pi-blaster')
     else:
         os.system('echo "'+pin+'='+brightness+'" > /dev/pi-blaster')
         store_state(pin, brightness)
-        print('[control] set pin '+pin+' at level '+brightness)
+        logger.info('set pin '+pin+' at level '+brightness)
 
 def turn_on():
     set_gpio(config.GPIO_RED, config.RED_DEFAULT)
@@ -82,12 +88,12 @@ def set_color(color, level):
         ok = True
 
     if ok:
-        print('[control] set color '+color+' at level '+level)
+        logger.info('set color '+color+' at level '+level)
         pin = get_pin_by_color(color)
         set_gpio(pin, level)
         return False
     else:
-        print('[control] set color, unrecognized combination: color '+color+' at level '+level)
+        logger.info('set color, unrecognized combination: color '+color+' at level '+level)
         return False
 
 
