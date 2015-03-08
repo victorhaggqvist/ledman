@@ -48,7 +48,7 @@ class TimeAuth:
                 return False
 
     def check_tim(self, hashtime, mintime):
-        if hashtime >= mintime:
+        if int(hashtime) >= int(mintime):
             return True
         else:
             return False
