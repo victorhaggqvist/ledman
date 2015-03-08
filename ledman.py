@@ -26,7 +26,7 @@ def main():
     parser.add_argument('-n', '--on', help="Turn on lights", action='store_true')
     parser.add_argument('-f', '--off', help="Turn off lights", action='store_true')
     parser.add_argument('--nofork', help="Don't fork away server", action='store_true')
-    parser.add_argument('-c', '--color', help="Color to set level for, used with --level", choices=['r','g','b'])
+    parser.add_argument('-c', '--color', help="Color to set level for, used with --level", choices=['r', 'g', 'b'])
     parser.add_argument('-l', '--level', help="Set light level for color. Level is float 0.0 - 0.9 or 1, used with --color")
     args = parser.parse_args()
 
@@ -51,9 +51,6 @@ def main():
     elif args.color and args.level:
         logger.info('set color level')
         control.set_color(args.color, args.level)
-        # print(args.color+'-c '+args.level+'-l')
-    # elif args.set:
-    #     print("setstuff")
     else:
         parser.print_help()
 
