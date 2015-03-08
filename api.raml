@@ -1,0 +1,62 @@
+#%RAML 0.8
+title: Ledman
+version: 0.1
+
+securitySchemes:
+  - timetoken:
+      type: x-timetoken
+      describedBy:
+        queryParameters:
+          token:
+            description: API token
+            type: string
+            required: true
+            example: 858348d26b52d6407a2c7caef588295a0a2398ea854216e308408c575c2463db
+          timestamp:
+            description: API token
+            type: integer
+            required: true
+            example: 1425853053
+
+/:
+  get:
+    responses:
+      200:
+        body:
+          text/plain:
+            example: ledman is happy
+
+/status:
+  securedBy: [timetoken]
+  get:
+    description: Request Led status
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "r": "0.3",
+                "b": "0.5",
+                "g": "0.3"
+              }
+
+/set/{color}:
+  securedBy: [timetoken]
+  put:
+    description: Set per color level
+    queryParameters:
+      level:
+        description: Color level
+        example: 0.3
+        required: true
+
+/off:
+  securedBy: [timetoken]
+  post:
+    description: Turn off leds
+
+/on:
+  securedBy: [timetoken]
+  post:
+    description: Turn on leds
