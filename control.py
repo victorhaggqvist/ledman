@@ -15,11 +15,10 @@ statefile = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ledstate.
 
 
 def store_state(pin, brightness):
-    store = open(statefile, "r")
-    state = store.read()
-    store.close()
-
     try:
+        store = open(statefile, "r")
+        state = store.read()
+        store.close()
         statejson = json.loads(state)
     except:
         statejson = {}
