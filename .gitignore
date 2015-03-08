@@ -55,3 +55,4 @@ docs/_build/
 target/
 ledman.conf
 ledstate.json
+deploy.sh
