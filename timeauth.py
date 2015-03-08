@@ -1,13 +1,14 @@
 # coding=utf-8
+import logging
 from time import time
 import hashlib
 from ledman import config
 
 __author__ = 'Victor Häggqvist'
 
-def dprint(msg):
-    if False:
-        print('[auth] '+msg)
+# logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class TimeAuth:
     timediff = 15 # minutes
@@ -24,27 +25,30 @@ class TimeAuth:
         :param timestamp: string
         :return: bool If authenticated
         """
-        dprint('running')
+        logger.debug('running')
         now = int(time())
-        dprint('now  timestamp: '+str(now))
-        dprint('hash timestamp: '+str(timestamp))
+        logger.debug('now  timestamp: '+str(now))
+        logger.debug('hash timestamp: '+str(timestamp))
 
         mintime = now-(60*60*self.timediff)
-        dprint('min  timestamp: '+str(mintime))
+        logger.debug('min  timestamp: '+str(mintime))
         if not self.check_tim(timestamp, mintime):
             return False
 
-        dprint('time ok')
+        logger.debug('time ok')
         for k in self.keys:
-            dprint('test key: '+k)
-            dprint(timestamp+k)
-            dprint('gtoken: '+hashlib.sha256(timestamp+k).hexdigest())
-            dprint(' token: '+token)
+            logger.debug('test key: '+k)
+            logger.debug(timestamp+k)
+            logger.debug('gtoken: '+hashlib.sha256(timestamp+k).hexdigest())
+            logger.debug(' token: '+token)
             if token == hashlib.sha256(timestamp+k).hexdigest():
+                logger.debug('auth ok')
                 return True
             elif token == hashlib.sha256(k+timestamp).hexdigest():
+                logger.debug('auth ok')
                 return True
             else:
+                logger.debug('auth bad')
                 return False
 
     def check_tim(self, hashtime, mintime):
