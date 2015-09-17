@@ -1,34 +1,30 @@
 # coding=utf-8
 import logging
 import os
-from ledman import DEBUG, config
+from ledman import config
 import json
+
+DEBUG = True
 
 __author__ = 'Victor Häggqvist'
 
 logger = logging.getLogger(__name__)
-fh = logging.FileHandler('ledman.log')
-fh.setLevel(logging.INFO)
-fh.setFormatter(logging.Formatter(fmt='%(asctime)s:%(levelname)s:%(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
-logger.addHandler(fh)
 statefile = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ledstate.json')
 
 
 def store_state(pin, brightness):
     try:
-        store = open(statefile, "r")
-        state = store.read()
-        store.close()
-        statejson = json.loads(state)
+        with open(statefile, "r") as store:
+            state = store.read()
+            statejson = json.loads(state)
     except:
         statejson = {}
 
     statejson[get_color_by_pin(pin)] = brightness
     ujson = json.dumps(statejson)
 
-    store = open(statefile,'w')
-    store.write(ujson)
-    store.close()
+    with open(statefile,'w') as store:
+        store.write(ujson)
 
 
 def set_gpio(pin, brightness):
@@ -40,10 +36,12 @@ def set_gpio(pin, brightness):
         store_state(pin, brightness)
         logger.info('set pin '+pin+' at level '+brightness)
 
+
 def turn_on():
     set_gpio(config.GPIO_RED, config.RED_DEFAULT)
     set_gpio(config.GPIO_GREEN, config.GREEN_DEFAULT)
     set_gpio(config.GPIO_BLUE, config.BLUE_DEFAULT)
+
 
 def turn_off():
     set_gpio(config.GPIO_RED, '0')
@@ -75,13 +73,13 @@ def set_color(color, level):
     :return:
     """
     ok = True
-    if color not in ['r','g','b']:
+    if color not in ['r', 'g', 'b']:
         ok = False
 
     if len(level) > 3:
         ok = False
 
-    if level in ['0','1']:
+    if level in ['0', '1']:
         ok = True
 
     if len(level) == 3 and is_float(level) and float(level) < 1:
@@ -102,6 +100,7 @@ def get_status():
     state = f.read()
     f.close()
     return state
+
 
 def is_float(num_string):
     try:

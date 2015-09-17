@@ -1,8 +1,9 @@
 # coding=utf-8
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 import os
 
 __author__ = 'Victor Häggqvist'
+
 
 class Config:
     confdir = os.path.dirname(os.path.realpath(__file__))

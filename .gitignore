@@ -56,3 +56,4 @@ target/
 ledman.conf
 ledstate.json
 deploy.sh
+nginx.conf
