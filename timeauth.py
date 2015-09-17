@@ -2,18 +2,19 @@
 import logging
 from time import time
 import hashlib
-from ledman import config
 
 __author__ = 'Victor Häggqvist'
 
-# logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+
 class TimeAuth:
-    timediff = 15 # minutes
-    def __init__(self):
-        self.keys =  config.keys
+    timediff = 15  # minutes
+
+    def __init__(self, keys):
+        self.keys = keys
 
     def auth(self, token, timestamp):
         """
@@ -39,19 +40,22 @@ class TimeAuth:
         for k in self.keys:
             logger.debug('test key: '+k)
             logger.debug(timestamp+k)
-            logger.debug('gtoken: '+hashlib.sha256(timestamp+k).hexdigest())
+            tkn = (timestamp+k).encode('utf8')
+            tkn2 = (k+timestamp).encode('utf8')
+            logger.debug('gtoken: '+hashlib.sha256(tkn).hexdigest())
             logger.debug(' token: '+token)
-            if token == hashlib.sha256(timestamp+k).hexdigest():
+            if token == hashlib.sha256(tkn).hexdigest():
                 logger.debug('auth ok')
                 return True
-            elif token == hashlib.sha256(k+timestamp).hexdigest():
+            elif token == hashlib.sha256(tkn2).hexdigest():
                 logger.debug('auth ok')
                 return True
             else:
                 logger.debug('auth bad')
                 return False
 
-    def check_tim(self, hashtime, mintime):
+    @staticmethod
+    def check_tim(hashtime, mintime):
         if int(hashtime) >= int(mintime):
             return True
         else:
