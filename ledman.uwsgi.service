@@ -1,0 +1,14 @@
+[Unit]
+Description=uWSGI Ledman
+After=syslog.target
+
+[Service]
+ExecStart=/usr/bin/uwsgi --ini /home/pi/ledman2/app/ledman.ini
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

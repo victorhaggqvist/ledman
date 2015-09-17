@@ -1,9 +1,7 @@
 # coding=utf-8
-from contextlib import contextmanager
 import logging
 import os
-from bottle import request, abort, run, post, get, response, put, Bottle
-# import lockfile
+from bottle import request, abort, run, response, Bottle
 from timeauth import TimeAuth
 from ledman import config
 import control
@@ -78,78 +76,6 @@ def status():
 
     response.content_type = 'application/json: charset=utf8'
     return state
-
-
-# @contextmanager
-# def __locked_pidfile(filename):
-#     # Acquire the lockfile
-#     lock = lockfile.FileLock(filename)
-#     lock.acquire(-1)
-#
-#     # Write out our pid
-#     with open(filename, "w+") as realfile:
-#         realfile.write(str(os.getpid()))
-#
-#     # Yield to the daemon
-#     yield
-#
-#     # Cleanup after ourselves
-#     os.remove(filename)
-#     lock.release()
-
-
-# def start_server(fork):
-#     """
-#     Start Bottle server
-#     :param fork: bool if we shall fork server
-#     :return:
-#     """
-#     if fork:
-#         with open(daemonlog, 'a+') as f:
-#             context = daemon.DaemonContext(
-#                 pidfile=__locked_pidfile(pidfile),
-#                 stdout=f,
-#                 stderr=f
-#                 )
-#             logger.info('starting server')
-#             logger.info('forking to background')
-#             with context:
-#                 run(host='127.0.0.1', port=8080)
-#
-#     else:
-#         fh = logging.FileHandler(serverlog)
-#         fh.setLevel(logging.INFO)
-#         fh.setFormatter(logging.Formatter(fmt='%(asctime)s:%(levelname)s:%(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
-#         logger.addHandler(fh)
-#         run(host='127.0.0.1', port=8080, debug=True)
-
-
-# def stop_server():
-#     if os.path.isfile(pidfile):
-#         logger.info('stopping server..')
-#         with open(pidfile, "r") as p:
-#             pid = int(p.read())
-#             os.kill(pid, signal.SIGTERM)
-#         logger.info('server stopped')
-#     else:
-#         logger.info('server is down')
-
-
-def status_server():
-    if os.path.isfile(pidfile):
-        f = open(pidfile, "r")
-        pid = int(f.read())
-        f.close()
-        logger.info('checking if pid '+str(pid)+' is running..')
-        if check_pid(pid):
-            logger.info('server is running')
-        else:
-            logger.info('server is down')
-            os.remove(pidfile)
-            logger.info('removing old pidfile')
-    else:
-        logger.info('server is down')
-
 
 def check_pid(pid):
     """ Check For the existence of a unix pid. """

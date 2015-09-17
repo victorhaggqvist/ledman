@@ -4,7 +4,7 @@ import os
 from ledman import config
 import json
 
-DEBUG = True
+DEBUG = False
 
 __author__ = 'Victor Häggqvist'
 

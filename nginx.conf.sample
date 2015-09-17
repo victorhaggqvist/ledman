@@ -1,0 +1,15 @@
+upstream ledman {
+    server 127.0.0.1:8080;
+}
+
+server {
+    listen      80;
+    server_name example.org;
+    access_log  /var/log/nginx/ledman.log;
+    charset     utf-8;
+
+    location / {
+        include    uwsgi_params;
+        uwsgi_pass ledman;
+    }
+}
