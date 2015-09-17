@@ -46,6 +46,5 @@ keys=testkeychangeme
             self.keys.append(k)
 
     def init_config(self):
-        f = open(self.config_file, 'w+')
-        f.write(self.default)
-        f.close()
+        with open(self.config_file, 'w+') as f:
+            f.write(self.default)
