@@ -1,0 +1,13 @@
+[Unit]
+Description=Autostart Ledman
+After=syslog.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/ledman2/app/ledman.py --on
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
