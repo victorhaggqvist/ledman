@@ -1,29 +1,41 @@
 # ledman
 
 A LED command and control thing. Build with [pi-blaster](https://github.com/sarfata/pi-blaster) and [Bottle](http://bottlepy.org/).
+Runs on Rasbian Jissie and likely other things to. 
 
-# Install
+## Install
+First install [pi-blaster](https://github.com/sarfata/pi-blaster).
 
-    cd ~
+Then get Ledman. These command assume you use Rasbian Jissie with the Systemd (which is default), but feel free to rol your own.
+
     git clone https://github.com/victorhaggqvist/ledman
-    cd ledman
-    sudo apt-get install python-pip
-    sudo pip install -r requirements.txt
-    sudo rm /etc/nginx/sites-enabled/default
-    sudo ln -s /home/pi/ledman/nginx.conf /etc/nginx/sites-enabled/ledman
-    chmod +x ledman.py
-    ./ledman.py -s start
+    sudo aptitude install uwsgi uwsgi-plugin-python3 python3-bottle nginx
     
-# Config
+    sudo rm /etc/nginx/sites-enabled/default
+    cp /home/pi/ledman/nginx.conf.sample /home/pi/ledman/nginx.conf
+    sudo ln -s /home/pi/ledman/nginx.conf /etc/nginx/sites-enabled/ledman
+    sudo ln -s /home/pi/ledman/ledman.ini /etc/uwsgi/ledman.ini
+    sudo cp /home/pi/ledman/ledman.autostart.service /etc/systemd/system/ledman.autostart.service
+    sudo mkdir -p /etc/uwsgi # this dir may not exist
+    sudo cp /home/pi/ledman/ledman.uwsgi.service /etc/systemd/system/ledman.uwsgi.service
+    
+    sudo systemctl enable ledman.autostart.service
+    sudo systemctl enable ledman.uwsgi.service
+    sudo systemctl start ledman.uwsgi.service
+    sudo systemctl start nginx
+    
+You may need to alter the above paths or the paths in the config files to fit your needs.
+    
+## Config
 On first run a config file will be created. Edit it as you like.
 
-Multiple apikeys may be added comma (,) separeted.
+Multiple apikeys may be added comma (,) separeted, have a look in `ledman.conf`.
 
 Also since the the server make use of tmiebased tokens for auth, make sure to have your timezone setup. On a debian system this can be done like so.
 
     sudo dpkg-reconfigure tzdata
 
-# License
+## License
 
     The MIT License (MIT)
 
